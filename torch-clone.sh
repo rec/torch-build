@@ -1,11 +1,11 @@
 #!/bin/bash
 set -e
 
-mkdir -p ~/git
-cd ~/git
+mkdir -p ${PYTORCH_PARENT:=~/.git}
+cd $PYTORCH_PARENT
 
 # PyTorch
-git clone git@github.com:pytorch/pytorch.git
+git clone git@github.com:rec/pytorch.git
 
 # Domain Libraries
 PKGS=(data vision text audio)
