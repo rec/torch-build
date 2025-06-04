@@ -22,4 +22,4 @@ export PYTORCH_GIT_BRANCH=typing
 export PYTORCH_GIT_USER=rec
 export PYTORCH_BUILD_DIRECTORY=$(pwd)
 
-popd
+source ~/code/dotfiles/link-dotfiles.sh
