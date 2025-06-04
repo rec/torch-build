@@ -2,15 +2,12 @@
 set -e
 
 # conda and the env vars are set correctly in pytorch-build.py
-SCRIPT_DIR=$( pushd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source $SCRIPT_DIR/pytorch-build.sh $@
-
-
-PKGS=(data vision audio)
-
 export BUILD_SOX=0
+PKGS=(data vision audio)
+SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
 
-cd ${PYTORCH_BUILD_DIRECTORY:=~/git$PYTORCH_BUILD_SUFFIX}
+source $SCRIPT_DIR/pytorch-build.sh $@
+pushd ${PYTORCH_BUILD_DIRECTORY:=~/git$PYTORCH_BUILD_SUFFIX}
 rm -rf torch-vision/build
 
 for pkg in ${PKGS[@]}; do
@@ -21,7 +18,7 @@ for pkg in ${PKGS[@]}; do
 done
 
 pip uninstall -y torchbenchmark
-pushd torchbenchmark
+cd torchbenchmark
 python install.py
 
 popd

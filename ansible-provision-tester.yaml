@@ -1,0 +1,45 @@
+name: Set up the development machine for PyTorch
+
+#  hosts: vast_sm90 ; make into a parameter?
+tasks:
+- name: Install packages needed
+  ansible.builtin.package:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - emacs
+    - file
+    - mlocate
+    - vim
+    - zip
+  become: true
+
+- name: Check if Miniconda is already installed
+  ansible.builtin.stat:
+    path: /workspace/miniconda3/bin/conda
+  register: conda_executable
+
+- name: Download Miniconda installer (if not already installed)
+  ansible.builtin.get_url:
+    url: https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh
+    dest: /workspace/miniconda.sh
+    mode: '0755'
+  when: not conda_executable.stat.exists
+
+- name: Install Miniconda (if not already installed)
+  ansible.builtin.shell: bash /workspace/miniconda.sh -b -p /workspace/miniconda3
+  args:
+    chdir: /tmp
+  when: not conda_executable.stat.exists
+
+- name: Cleanup after Miniconda installation
+  ansible.builtin.file:
+    path: "{{ item }}"
+    state: absent
+  loop:
+    - "{{ ansible_user_dir }}/.conda"
+    - /workspace/miniconda.sh
+
+- name: Clone torch-buid
+  ansible.builtin.git:
+    repo: "https://github.com/Quansight/torch-build.git"

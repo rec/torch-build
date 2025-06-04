@@ -6,12 +6,16 @@ pushd $PYTORCH_BUILD_DIRECTORY
 
 # PyTorch
 git clone git@github.com:${PYTORCH_GIT_USER:=pytorch}/pytorch.git
+
 pushd pytorch
-git submodule update --init --recursive
+
+git fetch
 if [ "$PYTORCH_GIT_USER" != "pytorch" ]; then
-  git remote add upstream git@github.com:pytorch/pytorch.git
+    git remote add upstream git@github.com:pytorch/pytorch.git
+    git fetch upstream
 fi
 
+git submodule update --init --recursive
 popd
 
 # Domain Libraries
