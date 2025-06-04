@@ -2,25 +2,29 @@
 set -e
 
 mkdir -p ${PYTORCH_BUILD_DIRECTORY:=~/git$PYTORCH_BUILD_SUFFIX}
-cd $PYTORCH_BUILD_DIRECTORY
+pushd $PYTORCH_BUILD_DIRECTORY
 
 # PyTorch
-git clone git@github.com:${PYTORCH_GIT_USER:=pytorch}/pytorch.git
+git clone ${PYTORCH_GIT_PREFIX:=git@github.com:}${PYTORCH_GIT_USER:=pytorch}/pytorch.git
+
 pushd pytorch
-git submodule update --init --recursive
 if [ "$PYTORCH_GIT_USER" != "pytorch" ]; then
-  git remote add upstream git@github.com:pytorch/pytorch.git
+    git remote add upstream ${PYTORCH_GIT_PREFIX}pytorch/pytorch.git
 fi
+
+git fetch
+git submodule update --init --recursive
 
 popd
 
 # Domain Libraries
 PKGS=(data vision text audio)
 for pkg in ${PKGS[@]}; do
-	git clone git@github.com:pytorch/${pkg}.git "torch-${pkg}"
+	git clone ${PYTORCH_GIT_PREFIX}pytorch/${pkg}.git "torch-${pkg}"
 done
 
-# torch/benchmarkBenchmark
-# torchbenchmark needs to have this name and be in the same folder as
-# PyTorch, otherwise benchmarks/dynamo/torchbench.py won't find it
-git clone git@github.com:pytorch/benchmark.git "torchbenchmark"
+# pytorch/benchmark needs to have the name torchbenchmark and be in the same
+# folder as PyTorch, otherwise benchmarks/dynamo/torchbench.py won't find it
+git clone ${PYTORCH_GIT_PREFIX}pytorch/benchmark.git "torchbenchmark"
+
+popd
