@@ -8,10 +8,10 @@ else
     ROOT=$(pwd)
 fi
 
-ROOT=${1:=$( pwd )}
-
 SCRIPT_DIR=$( cd -- "$( dirname -- "${BASH_SOURCE[0]}" )" &> /dev/null && pwd )
-source $SCRIPT_DIR/torch-clone.sh
+
+$SCRIPT_DIR/make-miniconda.sh
+$SCRIPT_DIR/torch-clone.sh
 
 if [[ $PYTORCH_GIT_BRANCH ]]; then
     pushd pytorch
@@ -22,4 +22,4 @@ fi
 export PYTORCH_BUILD_DIRECTORY=$( pwd )
 source $SCRIPT_DIR/torch-env.sh
 conda activate pytorch-dev
-source $SCRIPT_DIR/torch-build.sh
+$SCRIPT_DIR/torch-build.sh
