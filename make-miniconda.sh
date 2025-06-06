@@ -5,7 +5,7 @@ set -ex
 if [ "$1" ]; then
     ROOT="$1"
 else
-    ROOT=$(pwd)
+    ROOT=~
 fi
 
 MINICONDA=$ROOT/miniconda3
